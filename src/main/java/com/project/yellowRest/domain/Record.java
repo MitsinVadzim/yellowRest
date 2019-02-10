@@ -13,12 +13,10 @@ public class Record implements Serializable {
     private Long id;
 
     @NotNull(message = "Please enter distance")
-    //@Pattern(regexp="[\\d]{6}", message = "It's not number")
     @Digits(integer = 10, fraction = 0, message = "The distance must be no more than 100 characters")
     private Integer distance;
 
     @NotNull(message = "Please enter race time")
-    //@Pattern(regexp="[\\d]{6}", message = "It's not number")
     private Double time;
 
     @NotBlank(message = "Please enter race date")

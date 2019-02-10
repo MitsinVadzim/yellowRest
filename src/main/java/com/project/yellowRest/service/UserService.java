@@ -38,10 +38,10 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public boolean addUser(User user) {
+    public User addUser(User user) {
         User userFromDb = userRepository.findByUsername(user.getUsername());
         if (userFromDb != null) {
-            return false;
+            return null;
         }
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
@@ -49,7 +49,7 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         sendRecord(user);
-        return true;
+        return user;
     }
 
     private void sendRecord(User user) {
@@ -92,7 +92,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public void updateProfile(User user, String password, String email) {
+    public User updateProfile(User user, String password, String email) {
         String userEmail = user.getEmail();
         boolean isEmailChanged = (email != null && !email.equals(userEmail)) ||
                 (userEmail != null && !userEmail.equals(email));
@@ -109,5 +109,6 @@ public class UserService implements UserDetailsService {
         if (isEmailChanged) {
             sendRecord(user);
         }
+        return user;
     }
 }

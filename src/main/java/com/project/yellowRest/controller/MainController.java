@@ -4,7 +4,6 @@ import com.project.yellowRest.domain.Record;
 import com.project.yellowRest.domain.User;
 import com.project.yellowRest.exception.RecordNotFoundException;
 import com.project.yellowRest.repository.RecordRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @RestController
 public class MainController {
@@ -27,7 +25,7 @@ public class MainController {
     }
 
     @GetMapping("/home")
-    public String greeting(){
+    public String greeting() {
         return "Hello";
     }
 
@@ -39,7 +37,7 @@ public class MainController {
     @PostMapping("/records")
     public Record add(
             @RequestBody Record record,
-            @RequestBody MultipartFile file ,
+            @RequestBody MultipartFile file,
             @AuthenticationPrincipal User user
     ) throws IOException {
         record.setAuthor(user);
@@ -48,14 +46,14 @@ public class MainController {
     }
 
     @GetMapping("/records/{id}")
-    public Record showOne(@PathVariable Long id){
+    public Record showOne(@PathVariable Long id) {
         return recordRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException(id));
     }
 
     @PutMapping("/records/{id}")
     public Record update(@RequestBody Record record, @PathVariable("id") Record recordFromDb, @AuthenticationPrincipal User user) {
-        if(user.getId().equals(recordFromDb.getAuthor().getId())){
+        if (user.getId().equals(recordFromDb.getAuthor().getId())) {
             record.setAuthor(user);
             return recordRepository.save(record);
         }
@@ -64,7 +62,7 @@ public class MainController {
 
     @DeleteMapping("/records/{id}")
     public void delete(@PathVariable("id") Record record, @AuthenticationPrincipal User user) {
-        if(user.getId().equals(record.getAuthor().getId()))
+        if (user.getId().equals(record.getAuthor().getId()))
             recordRepository.delete(record);
     }
 }

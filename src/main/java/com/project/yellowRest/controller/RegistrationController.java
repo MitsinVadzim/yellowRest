@@ -3,9 +3,8 @@ package com.project.yellowRest.controller;
 import com.project.yellowRest.domain.User;
 import com.project.yellowRest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class RegistrationController {
@@ -22,5 +21,10 @@ public class RegistrationController {
             @RequestBody User user
     ) {
         userService.addUser(user);
+    }
+
+    @GetMapping("/activate/{code}")
+    public boolean activate(@PathVariable String code) {
+        return userService.activateUser(code);
     }
 }
