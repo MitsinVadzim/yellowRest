@@ -16,16 +16,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
+
     private final UserRepository userRepository;
 
-    private final MailSender mailSender;
 
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, MailSender mailSender, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.mailSender = mailSender;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -45,33 +44,9 @@ public class UserService implements UserDetailsService {
         }
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
-        user.setActivationCode(UUID.randomUUID().toString());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        sendRecord(user);
         return user;
-    }
-
-    private void sendRecord(User user) {
-        if (!StringUtils.isEmpty(user.getEmail())) {
-            String record = String.format(
-                    "Hello, %s! \n" +
-                            "Welcome to FirstProject. Please, visit next link: http://localhost:8080/activate/%s",
-                    user.getUsername(),
-                    user.getActivationCode()
-            );
-            mailSender.send(user.getEmail(), "Activation code", record);
-        }
-    }
-
-    public boolean activateUser(String code) {
-        User user = userRepository.findByActivationCode(code);
-        if (user == null) {
-            return false;
-        }
-        user.setActivationCode(null);
-        userRepository.save(user);
-        return true;
     }
 
     public Iterable<User> findAll() {
@@ -98,17 +73,11 @@ public class UserService implements UserDetailsService {
                 (userEmail != null && !userEmail.equals(email));
         if (isEmailChanged) {
             user.setEmail(email);
-            if (!StringUtils.isEmpty(email)) {
-                user.setActivationCode(UUID.randomUUID().toString());
-            }
         }
         if (!StringUtils.isEmpty(password)) {
             user.setPassword(passwordEncoder.encode(password));
         }
         userRepository.save(user);
-        if (isEmailChanged) {
-            sendRecord(user);
-        }
         return user;
     }
 }

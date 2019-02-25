@@ -22,25 +22,22 @@ public class Record implements Serializable {
     @NotBlank(message = "Please enter race date")
     private String date;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User author;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+    private Long userId;
 
     private String filename;
 
     public Record() {
     }
 
-    public Record(int distance, double time, String date, User user) {
+    public Record(int distance, double time, String date, Long userId) {
         this.distance = distance;
         this.time = time;
         this.date = date;
-        this.author = user;
+        this.userId = userId;
     }
 
-    public String getAuthorName() {
-        return author.getUsername();
-    }
 
     public Long getId() {
         return id;
@@ -74,12 +71,12 @@ public class Record implements Serializable {
         this.date = date;
     }
 
-    public User getAuthor() {
-        return author;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setAuthor(User user) {
-        this.author = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getFilename() {

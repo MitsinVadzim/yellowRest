@@ -32,8 +32,8 @@ public class UserRecordsController {
 
     @PutMapping("/user-records/{id}")
     public Record updateRecord(@RequestBody Record record, @PathVariable("id") Record recordFromDb, @AuthenticationPrincipal User user) {
-        if (user.getId().equals(recordFromDb.getAuthor().getId())) {
-            record.setAuthor(user);
+        if (user.getId().equals(recordFromDb.getUserId())) {
+            record.setUserId(user.getId());
             return recordRepository.save(record);
         }
         return null;
@@ -42,7 +42,7 @@ public class UserRecordsController {
 
     @DeleteMapping("/user-records/{id}")
     public void delete(@PathVariable("id") Record record, @AuthenticationPrincipal User user) {
-        if(user.getId().equals(record.getAuthor().getId()))
+        if(user.getId().equals(record.getUserId()))
             recordRepository.delete(record);
     }
 }

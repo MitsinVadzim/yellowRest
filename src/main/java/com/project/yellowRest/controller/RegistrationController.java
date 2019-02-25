@@ -22,9 +22,4 @@ public class RegistrationController {
     ) {
         userService.addUser(user);
     }
-
-    @GetMapping("/activate/{code}")
-    public boolean activate(@PathVariable String code) {
-        return userService.activateUser(code);
-    }
 }

@@ -14,6 +14,7 @@ import java.io.IOException;
 
 @RestController
 public class MainController {
+
     private final RecordRepository recordRepository;
 
     @Value("${upload.path}")
@@ -40,7 +41,7 @@ public class MainController {
             @RequestBody MultipartFile file,
             @AuthenticationPrincipal User user
     ) throws IOException {
-        record.setAuthor(user);
+        record.setUserId(user.getId());
         ControllerUtils.saveFile(record, file, uploadPath);
         return recordRepository.save(record);
     }
@@ -53,8 +54,8 @@ public class MainController {
 
     @PutMapping("/records/{id}")
     public Record update(@RequestBody Record record, @PathVariable("id") Record recordFromDb, @AuthenticationPrincipal User user) {
-        if (user.getId().equals(recordFromDb.getAuthor().getId())) {
-            record.setAuthor(user);
+        if (user.getId().equals(recordFromDb.getUserId())) {
+            record.setUserId(user.getId());
             return recordRepository.save(record);
         }
         return null;
@@ -62,7 +63,7 @@ public class MainController {
 
     @DeleteMapping("/records/{id}")
     public void delete(@PathVariable("id") Record record, @AuthenticationPrincipal User user) {
-        if (user.getId().equals(record.getAuthor().getId()))
+        if (user.getId().equals(record.getUserId()))
             recordRepository.delete(record);
     }
 }
