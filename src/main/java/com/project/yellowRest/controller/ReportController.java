@@ -2,6 +2,7 @@ package com.project.yellowRest.controller;
 
 import com.project.yellowRest.domain.Report;
 import com.project.yellowRest.domain.User;
+import com.project.yellowRest.repository.RecordRepository;
 import com.project.yellowRest.repository.UserRepository;
 import com.project.yellowRest.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,13 @@ public class ReportController {
 
     private final UserRepository userRepository;
     private final ReportService reportService;
+    private final RecordRepository recordRepository;
 
     @Autowired
-    public ReportController(UserRepository userRepository, ReportService reportService) {
+    public ReportController(UserRepository userRepository, ReportService reportService, RecordRepository recordRepository) {
         this.userRepository = userRepository;
         this.reportService = reportService;
+        this.recordRepository = recordRepository;
     }
 
     @GetMapping("/reports")

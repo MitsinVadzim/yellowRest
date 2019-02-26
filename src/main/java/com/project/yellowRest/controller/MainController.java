@@ -10,6 +10,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.Transient;
+import javax.transaction.Transactional;
 import java.io.IOException;
 
 @RestController
@@ -31,7 +33,10 @@ public class MainController {
     }
 
     @GetMapping("/records")
+//    @Transactional
     public Iterable<Record> showAll() {
+        Iterable<Record> records = recordRepository.findAll();
+        System.out.println();
         return recordRepository.findAll();
     }
 
@@ -41,7 +46,7 @@ public class MainController {
             @RequestBody MultipartFile file,
             @AuthenticationPrincipal User user
     ) throws IOException {
-        record.setUserId(user.getId());
+        record.setAuthor(user);
         ControllerUtils.saveFile(record, file, uploadPath);
         return recordRepository.save(record);
     }
@@ -54,8 +59,8 @@ public class MainController {
 
     @PutMapping("/records/{id}")
     public Record update(@RequestBody Record record, @PathVariable("id") Record recordFromDb, @AuthenticationPrincipal User user) {
-        if (user.getId().equals(recordFromDb.getUserId())) {
-            record.setUserId(user.getId());
+        if (user.getId().equals(recordFromDb.getId())) {
+            record.setAuthor(user);
             return recordRepository.save(record);
         }
         return null;
@@ -63,7 +68,7 @@ public class MainController {
 
     @DeleteMapping("/records/{id}")
     public void delete(@PathVariable("id") Record record, @AuthenticationPrincipal User user) {
-        if (user.getId().equals(record.getUserId()))
+        if (user.getId().equals(record.getAuthor().getId()))
             recordRepository.delete(record);
     }
 }

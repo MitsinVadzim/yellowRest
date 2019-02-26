@@ -1,5 +1,8 @@
 package com.project.yellowRest.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
@@ -7,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
-public class Record implements Serializable {
+public class Record{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -22,20 +25,26 @@ public class Record implements Serializable {
     @NotBlank(message = "Please enter race date")
     private String date;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    //@JsonBackReference
+    @JsonIgnore
+    private User author;
+
+//    @Column(insertable = false, updatable = false)
+//    private Long userId;
 
     private String filename;
 
     public Record() {
     }
 
-    public Record(int distance, double time, String date, Long userId) {
+    public Record(int distance, double time, String date, User author) {
         this.distance = distance;
         this.time = time;
         this.date = date;
-        this.userId = userId;
+        this.author = author;
+        //userId = user.getId();
     }
 
 
@@ -71,12 +80,12 @@ public class Record implements Serializable {
         this.date = date;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setAuthor(User userId) {
+        this.author = author;
     }
 
     public String getFilename() {
