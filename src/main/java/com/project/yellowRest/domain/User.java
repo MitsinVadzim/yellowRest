@@ -1,8 +1,10 @@
 package com.project.yellowRest.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,15 +12,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+//@RequiredArgsConstructor
 @Entity
 @Table(name = "usr")
 @Data
-@RequiredArgsConstructor
-public class User implements UserDetails {
+@NoArgsConstructor
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,10 +30,16 @@ public class User implements UserDetails {
     @NotBlank(message = "Username cannot be empty")
     private String username;
 
-    @NotBlank(message = "Password cannot be empty")
-    private String password;
+//    @NotBlank(message = "Password cannot be empty")
+//    private String password;
 
     private boolean active;
+
+    private String gender;
+    private String locale;
+    private String userpic;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDateTime lastVisit;
 
     @Email(message = "Email is not correct")
     @NotBlank(message = "Email cannot be empty")
@@ -46,36 +56,37 @@ public class User implements UserDetails {
     //@JsonBackReference
     private List<Record> records;
 
-    public User(String username, String password, String email) {
+    public User(String username, String email) {
         this.username = username;
-        this.password = password;
+        //this.password = password;
         this.email = email;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return isActive();
-    }
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return getRoles();
+//    }
+//
+//    @Override
+//    public boolean isAccountNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonLocked() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isCredentialsNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isEnabled() {
+//        return isActive();
+//    }
 
     @Override
     public String toString(){

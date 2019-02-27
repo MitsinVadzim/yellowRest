@@ -29,16 +29,16 @@ public class UserController {
         return user;
     }
 
-    @GetMapping("/profile")
-    public User getProfile(@AuthenticationPrincipal User user) {
-        return user;
-    }
-
-    @PutMapping("/profile")
-    public User updateProfile(
-            @RequestBody User newUser,
-            @AuthenticationPrincipal User user
-    ) {
-        return userService.updateProfile(user, newUser.getPassword(), newUser.getEmail());
-    }
+//    @GetMapping("/profile")
+//    public User getProfile(@AuthenticationPrincipal User user) {
+//        return user;
+//    }
+//
+//    @PutMapping("/profile")
+//    public User updateProfile(
+//            @RequestBody User newUser,
+//            @AuthenticationPrincipal User user
+//    ) {
+//        return userService.updateProfile(user, newUser.getEmail());
+//    }
 }

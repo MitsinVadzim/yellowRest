@@ -15,27 +15,27 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService{
 
     private final UserRepository userRepository;
 
 
-    private final PasswordEncoder passwordEncoder;
+    //private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        //this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(s);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found!");
-        }
-        return user;
-    }
+//    @Override
+//    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+//        User user = userRepository.findByUsername(s);
+//        if (user == null) {
+//            throw new UsernameNotFoundException("User not found!");
+//        }
+//        return user;
+//    }
 
     public User addUser(User user) {
         User userFromDb = userRepository.findByUsername(user.getUsername());
@@ -44,7 +44,7 @@ public class UserService implements UserDetailsService {
         }
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        //user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return user;
     }
@@ -53,18 +53,33 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public void saveUser(User user, String username, Map<String, String> form) {
-        user.setUsername(username);
-        Set<String> roles = Arrays.stream(Role.values())
-                .map(Role::name)
-                .collect(Collectors.toSet());
-        user.getRoles().clear();
-        for (String key : form.keySet()) {
-            if (roles.contains(key)) {
-                user.getRoles().add(Role.valueOf(key));
-            }
+//    public void saveUser(User user, String username, Map<String, String> form) {
+//        user.setUsername(username);
+//        Set<String> roles = Arrays.stream(Role.values())
+//                .map(Role::name)
+//                .collect(Collectors.toSet());
+//        user.getRoles().clear();
+//        for (String key : form.keySet()) {
+//            if (roles.contains(key)) {
+//                user.getRoles().add(Role.valueOf(key));
+//            }
+//        }
+//        userRepository.save(user);
+//    }
+
+    public String saveUser(String email){
+        User user = userRepository.findByEmail(email);
+        if(user != null){
+            return "User exist";
+        }else{
+            user = new User();
+            user.setActive(true);
+            user.setEmail(email);
+            user.setUsername("Vadim");
+            userRepository.save(user);
+
+            return "User not exist";
         }
-        userRepository.save(user);
     }
 
     public User updateProfile(User user, String password, String email) {
@@ -74,9 +89,9 @@ public class UserService implements UserDetailsService {
         if (isEmailChanged) {
             user.setEmail(email);
         }
-        if (!StringUtils.isEmpty(password)) {
-            user.setPassword(passwordEncoder.encode(password));
-        }
+//        if (!StringUtils.isEmpty(password)) {
+//            user.setPassword(passwordEncoder.encode(password));
+//        }
         userRepository.save(user);
         return user;
     }

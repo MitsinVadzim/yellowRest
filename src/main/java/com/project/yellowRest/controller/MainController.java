@@ -1,30 +1,46 @@
 package com.project.yellowRest.controller;
 
+import com.project.yellowRest.config.oauth.GooglePrincipal;
 import com.project.yellowRest.domain.Record;
 import com.project.yellowRest.domain.User;
 import com.project.yellowRest.exception.RecordNotFoundException;
 import com.project.yellowRest.repository.RecordRepository;
+import com.project.yellowRest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Transient;
-import javax.transaction.Transactional;
 import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 public class MainController {
 
     private final RecordRepository recordRepository;
+    private final UserService userService;
 
     @Value("${upload.path}")
     private String uploadPath;
 
     @Autowired
-    public MainController(RecordRepository recordRepository) {
+    public MainController(RecordRepository recordRepository, UserService userService) {
         this.recordRepository = recordRepository;
+        this.userService = userService;
+    }
+
+    @GetMapping("/google/login")
+    public String login(@RequestParam("code") String code) {
+        return "Code =  " + code;
+    }
+
+    @GetMapping("/userprofile")
+    public String get(Principal principal) {
+
+
+
+        return userService.saveUser(principal.getName());
     }
 
     @GetMapping("/home")
