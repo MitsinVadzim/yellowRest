@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +22,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenStoreUserApprovalHandler;
@@ -31,16 +34,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import javax.annotation.Resource;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserRepository userRepository;
 
 ////    private final UserService userDetailsService;
 ////
@@ -183,27 +185,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PrincipalExtractor principalExtractor(UserRepository userRepository) {
-        return map -> {
-            Long id = (Long)map.get("id");
-
-            User user = userRepository.findById(id).orElseGet(() -> {
-                User newUser = new User();
-
-                newUser.setId(id);
-                newUser.setUsername((String) map.get("name"));
-                newUser.setEmail((String) map.get("email"));
-                newUser.setGender((String) map.get("gender"));
-                newUser.setLocale((String) map.get("locale"));
-                newUser.setUserpic((String) map.get("picture"));
-                newUser.setActive(true);
-                newUser.setRoles(Collections.singleton(Role.USER));
-                return newUser;
-            });
-
-            user.setLastVisit(LocalDateTime.now());
-
-            return userRepository.save(user);
+    ApplicationListener<AuthenticationSuccessEvent> doSomething() {
+        return new ApplicationListener<AuthenticationSuccessEvent>() {
+            @Override
+            public void onApplicationEvent(AuthenticationSuccessEvent event){
+                OAuth2Authentication authentication = (OAuth2Authentication) event.getAuthentication();
+                Principal principal = (Principal) authentication.getPrincipal();
+                System.out.println("fdas");
+                // get required details from OAuth2Authentication instance and proceed further
+            }
         };
     }
 
