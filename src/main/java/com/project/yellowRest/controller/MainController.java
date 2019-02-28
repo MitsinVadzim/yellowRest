@@ -19,15 +19,13 @@ import java.security.Principal;
 public class MainController {
 
     private final RecordRepository recordRepository;
-    private final UserService userService;
 
     @Value("${upload.path}")
     private String uploadPath;
 
     @Autowired
-    public MainController(RecordRepository recordRepository, UserService userService) {
+    public MainController(RecordRepository recordRepository) {
         this.recordRepository = recordRepository;
-        this.userService = userService;
     }
 
     @GetMapping("/google/login")
@@ -40,7 +38,7 @@ public class MainController {
 
 
 
-        return userService.saveUser(principal.getName());
+        return principal.toString();
     }
 
     @GetMapping("/home")

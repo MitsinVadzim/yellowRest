@@ -1,16 +1,14 @@
 package com.project.yellowRest.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 @Entity
-public class Record{
+public class Record {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

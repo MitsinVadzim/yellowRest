@@ -1,5 +1,6 @@
 package com.project.yellowRest.service;
 
+import com.project.yellowRest.config.oauth.GooglePrincipal;
 import com.project.yellowRest.domain.Role;
 import com.project.yellowRest.domain.User;
 import com.project.yellowRest.repository.UserRepository;
@@ -67,17 +68,20 @@ public class UserService{
 //        userRepository.save(user);
 //    }
 
-    public String saveUser(String email){
-        User user = userRepository.findByEmail(email);
-        if(user != null){
+    public String saveUser(GooglePrincipal principal){
+        User userDb = userRepository.findByEmail(principal.getEmail());
+        if(userDb != null){
             return "User exist";
         }else{
-            user = new User();
-            user.setActive(true);
-            user.setEmail(email);
-            user.setUsername("Vadim");
-            userRepository.save(user);
-
+            userDb = new User();
+            userDb.setEmail(principal.getEmail());
+            userDb.setActive(true);
+            userDb.setUsername(principal.getName());
+            userDb.setRoles(Collections.singleton(Role.USER));
+            userDb.setUserpic(principal.getPicture());
+            userDb.setGender(principal.getGender());
+            userRepository.save(userDb);
+            int i = 1;
             return "User not exist";
         }
     }

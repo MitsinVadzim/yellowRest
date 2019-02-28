@@ -29,6 +29,7 @@ import org.springframework.security.oauth2.provider.approval.TokenStoreUserAppro
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -38,7 +39,7 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -180,21 +181,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/login**", "/js/**", "/error**").permitAll()
                 .anyRequest().authenticated()
                 .and().logout().logoutSuccessUrl("/").permitAll()
+//                .and().formLogin().loginProcessingUrl("/google/login")
+//                .successHandler(myAuthenticationSuccessHandler())
                 .and()
                 .csrf().disable();
+
     }
 
-    @Bean
-    ApplicationListener<AuthenticationSuccessEvent> doSomething() {
-        return new ApplicationListener<AuthenticationSuccessEvent>() {
-            @Override
-            public void onApplicationEvent(AuthenticationSuccessEvent event){
-                OAuth2Authentication authentication = (OAuth2Authentication) event.getAuthentication();
-                Principal principal = (Principal) authentication.getPrincipal();
-                System.out.println("fdas");
-                // get required details from OAuth2Authentication instance and proceed further
-            }
-        };
-    }
+
+
+
+
+//    @Bean
+//    ApplicationListener<AuthenticationSuccessEvent> doSomething() {
+//        return new ApplicationListener<AuthenticationSuccessEvent>() {
+//            @Override
+//            public void onApplicationEvent(AuthenticationSuccessEvent event){
+//                OAuth2Authentication authentication = (OAuth2Authentication) event.getAuthentication();
+//                Principal principal = (Principal) authentication.getPrincipal();
+//                System.out.println("fdas");
+//                // get required details from OAuth2Authentication instance and proceed further
+//            }
+//        };
+//    }
 
 }
