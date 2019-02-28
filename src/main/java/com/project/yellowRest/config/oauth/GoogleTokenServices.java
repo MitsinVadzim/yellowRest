@@ -78,7 +78,6 @@ public class GoogleTokenServices implements ResourceServerTokenServices {
                 (String)userInfo.get("gender")
         );
         String result = userService.saveUser(principal);
-
         int i = 1;
         return new UsernamePasswordAuthenticationToken(principal, null, singleton(new SimpleGrantedAuthority("ROLE_USER")));
     }

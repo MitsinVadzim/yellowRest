@@ -1,6 +1,7 @@
 package com.project.yellowRest.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@Data
 public class Record {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,7 +27,7 @@ public class Record {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    //@JsonBackReference
+
     @JsonIgnore
     private User author;
 
@@ -45,52 +47,4 @@ public class Record {
         //userId = user.getId();
     }
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Integer distance) {
-        this.distance = distance;
-    }
-
-    public Double getTime() {
-        return time;
-    }
-
-    public void setTime(Double time) {
-        this.time = time;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User userId) {
-        this.author = author;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
 }

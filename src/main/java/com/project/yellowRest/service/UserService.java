@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -80,6 +81,7 @@ public class UserService{
             userDb.setRoles(Collections.singleton(Role.USER));
             userDb.setUserpic(principal.getPicture());
             userDb.setGender(principal.getGender());
+            userDb.setLastVisit(LocalDateTime.now());
             userRepository.save(userDb);
             int i = 1;
             return "User not exist";

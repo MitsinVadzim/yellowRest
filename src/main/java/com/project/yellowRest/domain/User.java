@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-//@RequiredArgsConstructor
 @Entity
 @Table(name = "usr")
 @Data
@@ -23,9 +22,6 @@ public class User{
 
     @NotBlank(message = "Username cannot be empty")
     private String username;
-
-//    @NotBlank(message = "Password cannot be empty")
-//    private String password;
 
     private boolean active;
 
@@ -39,47 +35,18 @@ public class User{
     private String email;
 
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
-    //@JsonIgnore
-    //@JsonBackReference
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private List<Record> records;
 
     public User(String username, String email) {
         this.username = username;
-        //this.password = password;
         this.email = email;
     }
-
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return getRoles();
-//    }
-//
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return isActive();
-//    }
 
     @Override
     public String toString(){
