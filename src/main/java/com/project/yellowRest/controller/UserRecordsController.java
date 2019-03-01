@@ -1,7 +1,7 @@
 package com.project.yellowRest.controller;
 
-import com.project.yellowRest.domain.Record;
-import com.project.yellowRest.domain.User;
+import com.project.yellowRest.entity.Record;
+import com.project.yellowRest.entity.User;
 import com.project.yellowRest.repository.RecordRepository;
 import com.project.yellowRest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,21 +11,18 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 public class UserRecordsController {
 
     private final RecordRepository recordRepository;
-    private final UserRepository userRepository;
 
     @Value("${upload.path}")
     private String uploadPath;
 
     @Autowired
-    public UserRecordsController(RecordRepository recordRepository, UserRepository userRepository) {
+    public UserRecordsController(RecordRepository recordRepository) {
         this.recordRepository = recordRepository;
-        this.userRepository = userRepository;
     }
 
     @GetMapping("/user-records/{user}")
@@ -33,13 +30,8 @@ public class UserRecordsController {
     public List<Record> userRecords(
             @PathVariable("user") Long userId
     ) {
-        //return recordRepository.findAll(user.getRecordsId());
-        //return user.getRecordsId();
-        User user = userRepository.findById(userId).get();
-        //System.out.println("UserId: "+ userId+ "user: "+ user);
-        List<Record> records = user.getRecords();
-        System.out.println("Hi");
-        return records;
+        List<Record> recordList = recordRepository.findByUserId(userId);
+        return recordList;
     }
 
     @PutMapping("/user-records/{id}")

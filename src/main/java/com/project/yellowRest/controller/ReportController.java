@@ -1,7 +1,7 @@
 package com.project.yellowRest.controller;
 
-import com.project.yellowRest.domain.Report;
-import com.project.yellowRest.domain.User;
+import com.project.yellowRest.entity.Report;
+import com.project.yellowRest.entity.User;
 import com.project.yellowRest.repository.RecordRepository;
 import com.project.yellowRest.repository.UserRepository;
 import com.project.yellowRest.service.ReportService;
@@ -30,6 +30,7 @@ public class ReportController {
     public List<Report> userRecords(
             @AuthenticationPrincipal User user
     ) {
-        return reportService.getReports(user.getRecords());
+        //return reportService.getReports(user.getRecords());
+        return null;
     }
 }

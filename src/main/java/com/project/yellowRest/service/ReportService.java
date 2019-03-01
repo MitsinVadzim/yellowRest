@@ -1,7 +1,7 @@
 package com.project.yellowRest.service;
 
-import com.project.yellowRest.domain.Record;
-import com.project.yellowRest.domain.Report;
+import com.project.yellowRest.entity.Record;
+import com.project.yellowRest.entity.Report;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

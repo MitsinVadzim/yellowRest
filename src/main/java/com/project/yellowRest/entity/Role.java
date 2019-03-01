@@ -1,4 +1,4 @@
-package com.project.yellowRest.domain;
+package com.project.yellowRest.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 

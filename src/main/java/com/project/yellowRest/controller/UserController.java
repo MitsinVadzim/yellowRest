@@ -1,10 +1,9 @@
 package com.project.yellowRest.controller;
 
-import com.project.yellowRest.domain.User;
+import com.project.yellowRest.entity.User;
 import com.project.yellowRest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,16 +28,4 @@ public class UserController {
         return user;
     }
 
-//    @GetMapping("/profile")
-//    public User getProfile(@AuthenticationPrincipal User user) {
-//        return user;
-//    }
-//
-//    @PutMapping("/profile")
-//    public User updateProfile(
-//            @RequestBody User newUser,
-//            @AuthenticationPrincipal User user
-//    ) {
-//        return userService.updateProfile(user, newUser.getEmail());
-//    }
 }

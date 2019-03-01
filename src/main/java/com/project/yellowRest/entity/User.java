@@ -1,4 +1,4 @@
-package com.project.yellowRest.domain;
+package com.project.yellowRest.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

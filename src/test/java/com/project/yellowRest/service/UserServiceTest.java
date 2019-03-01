@@ -1,7 +1,7 @@
 package com.project.yellowRest.service;
 
-import com.project.yellowRest.domain.Role;
-import com.project.yellowRest.domain.User;
+import com.project.yellowRest.entity.Role;
+import com.project.yellowRest.entity.User;
 import com.project.yellowRest.repository.UserRepository;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -16,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

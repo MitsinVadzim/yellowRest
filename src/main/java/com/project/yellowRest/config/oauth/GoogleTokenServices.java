@@ -1,9 +1,6 @@
 package com.project.yellowRest.config.oauth;
 
-import com.project.yellowRest.domain.User;
-import com.project.yellowRest.repository.UserRepository;
 import com.project.yellowRest.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,7 +20,6 @@ import org.springframework.security.oauth2.provider.token.ResourceServerTokenSer
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigInteger;
-import java.util.List;
 import java.util.Map;
 import static java.util.Collections.singleton;
 
@@ -77,9 +73,8 @@ public class GoogleTokenServices implements ResourceServerTokenServices {
                 (String)userInfo.get("picture"),
                 (String)userInfo.get("gender")
         );
-        String result = userService.saveUser(principal);
-        int i = 1;
-        return new UsernamePasswordAuthenticationToken(principal, null, singleton(new SimpleGrantedAuthority("ROLE_USER")));
+        userService.saveUser(principal);
+        return new UsernamePasswordAuthenticationToken(principal, null, singleton(new SimpleGrantedAuthority("USER")));
     }
 
     private HttpHeaders getHttpHeaders(String accessToken) {

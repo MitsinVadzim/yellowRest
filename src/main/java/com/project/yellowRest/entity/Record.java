@@ -1,4 +1,4 @@
-package com.project.yellowRest.domain;
+package com.project.yellowRest.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -27,12 +27,11 @@ public class Record {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-
     @JsonIgnore
     private User author;
 
-//    @Column(insertable = false, updatable = false)
-//    private Long userId;
+    @Column(insertable = false, updatable = false, name = "user_id")
+    private Long userId;
 
     private String filename;
 
@@ -44,7 +43,7 @@ public class Record {
         this.time = time;
         this.date = date;
         this.author = author;
-        //userId = user.getId();
+        this.userId = author.getId();
     }
 
 }

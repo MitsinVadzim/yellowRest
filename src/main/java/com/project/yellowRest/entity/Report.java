@@ -1,4 +1,4 @@
-package com.project.yellowRest.domain;
+package com.project.yellowRest.entity;
 
 public class Report {
     private String firstDayOfTheWeek;
