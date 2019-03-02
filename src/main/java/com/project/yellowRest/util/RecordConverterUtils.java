@@ -4,6 +4,9 @@ import com.project.yellowRest.entity.Record;
 import com.project.yellowRest.entity.User;
 import com.project.yellowRest.model.RecordModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RecordConverterUtils {
     public static RecordModel convertToModel(Record record){
         RecordModel recordModel = new RecordModel();
@@ -26,5 +29,13 @@ public class RecordConverterUtils {
         record.setUserId(recordModel.getUserId());
         record.setAuthor(user);
         return record;
+    }
+
+    public static List<RecordModel> convertListToModels(Iterable<Record> records){
+        List<RecordModel> recordModels = new ArrayList<>();
+        for (Record record : records) {
+            recordModels.add(RecordConverterUtils.convertToModel(record));
+        }
+        return recordModels;
     }
 }

@@ -3,11 +3,12 @@ package com.project.yellowRest.controller;
 import com.project.yellowRest.entity.User;
 import com.project.yellowRest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
@@ -18,14 +19,20 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public Iterable<User> userList() {
-        return userService.findAll();
+    public Iterable<User> userList(Pageable pageable) {
+        return userService.findAll(pageable);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("{user}")
-    public User userEditForm(@PathVariable User user) {
-        return user;
+    public User getUser(@PathVariable("user") Long userId) {
+        return userService.getUserById(userId);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("{user}")
+    public User updateUser(@PathVariable("user") Long userId) {
+        return userService.getUserById(userId);
     }
 
 }
