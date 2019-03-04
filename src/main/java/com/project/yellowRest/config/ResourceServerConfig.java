@@ -9,6 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
@@ -25,13 +26,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableWebSecurity
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-    private final UserService userService;
-
-    @Autowired
-    public ResourceServerConfig(UserService userService){
-        this.userService = userService;
-    }
-
     @Bean
     @ConfigurationProperties("google.client")
     public AuthorizationCodeResourceDetails google() {
@@ -46,8 +40,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-//        http.addFilterAfter(
-//                new SaveDatabaseFilter(), BasicAuthenticationFilter.class);
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
                 .antMatchers("/", "/v2/api-docs", "/google/login",
@@ -62,12 +54,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     }
 
-
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
         resources.resourceId(google().getClientId());
     }
-
 
     @Bean
     public ResourceServerTokenServices tokenServices(AccessTokenValidator tokenValidator, UserService userService) {
@@ -83,30 +73,4 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         accessTokenValidator.setCheckTokenUrl(googleResource().getTokenInfoUri());
         return accessTokenValidator;
     }
-
-
-//    @Bean
-//    public PrincipalExtractor principalExtractor(UserRepository userRepository) {
-//        return map -> {
-//            Long id = (Long)map.get("id");
-//
-//            User user = userRepository.findById(id).orElseGet(() -> {
-//                User newUser = new User();
-//
-//                newUser.setId(id);
-//                newUser.setUsername((String) map.get("name"));
-//                newUser.setEmail((String) map.get("email"));
-//                newUser.setGender((String) map.get("gender"));
-//                newUser.setLocale((String) map.get("locale"));
-//                newUser.setUserpic((String) map.get("picture"));
-//                newUser.setActive(true);
-//                newUser.setRoles(Collections.singleton(Role.USER));
-//                return newUser;
-//            });
-//
-//            user.setLastVisit(LocalDateTime.now());
-//
-//            return userRepository.save(user);
-//        };
-//    }
 }
