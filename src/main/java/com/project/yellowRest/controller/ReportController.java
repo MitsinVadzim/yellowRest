@@ -2,6 +2,7 @@ package com.project.yellowRest.controller;
 
 import com.project.yellowRest.entity.Report;
 import com.project.yellowRest.entity.User;
+import com.project.yellowRest.model.ReportModel;
 import com.project.yellowRest.repository.RecordRepository;
 import com.project.yellowRest.repository.UserRepository;
 import com.project.yellowRest.service.ReportService;
@@ -15,22 +16,16 @@ import java.util.List;
 @Controller
 public class ReportController {
 
-    private final UserRepository userRepository;
     private final ReportService reportService;
-    private final RecordRepository recordRepository;
 
     @Autowired
-    public ReportController(UserRepository userRepository, ReportService reportService, RecordRepository recordRepository) {
-        this.userRepository = userRepository;
+    public ReportController(ReportService reportService) {
         this.reportService = reportService;
-        this.recordRepository = recordRepository;
     }
 
     @GetMapping("/reports")
-    public List<Report> userRecords(
-            @AuthenticationPrincipal User user
-    ) {
-        //return reportService.getReports(user.getRecords());
-        return null;
+    public List<ReportModel> showAll() {
+        List<ReportModel> reportModels = reportService.showReports();
+        return reportModels;
     }
 }

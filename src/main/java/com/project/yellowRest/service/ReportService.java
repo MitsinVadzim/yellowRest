@@ -1,66 +1,49 @@
 package com.project.yellowRest.service;
 
-import com.project.yellowRest.entity.Record;
-import com.project.yellowRest.entity.Report;
+import com.project.yellowRest.model.ReportModel;
+import com.project.yellowRest.repository.ReportRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReportService {
 
-    private List<Report> reports;
+    private final JdbcTemplate jdbcTemplate;
 
-    public List<Report> getReports(List<Record> records) {
-        reports = new ArrayList<>();
-        Record record = records.get(0);
-        reports.add(startInit(record));
-
-        for(int i = 1; i < records.size(); i++){
-            addRecord(records.get(i));
-        }
-        return reports;
+    @Autowired
+    public ReportService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    private String getLastDayOfTheWeek(Report report){
-        int firstDay = Integer.parseInt(report.getFirstDayOfTheWeek().substring(8));
-        int firstMonth = Integer.parseInt(report.getFirstDayOfTheWeek().substring(5, 7));
-        int firstYear = Integer.parseInt(report.getFirstDayOfTheWeek().substring(0, 4));
-        firstDay += 6;
-        if (firstDay > 30){
-            firstDay-=30;
-            ++firstMonth;
-            if (firstMonth > 12){
-                firstMonth-=12;
-                ++firstYear;
-            }
-        }
-        return firstYear+"-"+firstMonth+"-"+firstDay;
+    public List<ReportModel> showReports(){
+        return this.jdbcTemplate.query("SELECT date_part('year', date::date) as year,\n" +
+                "       date_part('week', date::date) AS week,\n" +
+                "\t   SUM(distance) as totaldistance,\n" +
+                "\t   AVG(distance/time) as avspeed,\n" +
+                "\t   AVG(time) as avtime" +
+                "       user_id\n" +
+                "FROM record\n" +
+                "GROUP BY year, week, user_id;",
+                ReportRepository.ROW_MAPPER);
+//        List<Map<String, Object>> rows = jdbcTemplate.queryForList("SELECT date_part('year', date::date) as year,\n" +
+//                "       date_part('week', date::date) AS week,\n" +
+//                "\t   SUM(distance) as totaldistance,\n" +
+//                "\t   AVG(distance/time) as avspeed,\n" +
+//                "\t   AVG(time) as avtime" +
+//                "       user_id\n" +
+//                "FROM record\n" +
+//                "GROUP BY year, week, user_id;");
+//        List<ReportModel> reportModels = new ArrayList<>();
+//        for (Map row : rows) {
+//            ReportModel reportModel = new ReportModel(row.get("user_id"), row.get("year"),
+//                    row.get("week"), row.get("avgspeed"),
+//                    row.get("avtime"), row.get("totaldistance"));
+//            reportModels.add(reportModel);
+//        }
     }
-
-    private void addRecord(Record record){
-        if(record.getDate().compareTo(reports.get(reports.size()-1).getLastDayOfTheWeek()) > 0){
-            reports.add(startInit(record));
-        }else{
-            updateReport(reports.get(reports.size()-1), record);
-        }
-    }
-
-    private void updateReport(Report report, Record record){
-        report.setTotalDistance(report.getTotalDistance() + record.getDistance());
-        report.setAvTime((report.getAvTime()+record.getTime()) /2);
-        report.setAvSpeed((report.getAvSpeed()+ ((double)record.getDistance()/record.getTime())) /2);
-    }
-
-    private Report startInit(Record record) {
-        if(record == null){
-            return null;
-        }
-        Report report = new Report(record.getDate(), record.getTime(), record.getDistance());
-        report.setLastDayOfTheWeek(getLastDayOfTheWeek(report));
-        report.setAvSpeed((double)report.getTotalDistance()/report.getAvTime());
-        return report;
-    }
-
 }

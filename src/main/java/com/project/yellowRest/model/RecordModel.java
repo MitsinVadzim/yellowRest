@@ -3,6 +3,7 @@ package com.project.yellowRest.model;
 import lombok.Data;
 
 import javax.validation.constraints.Null;
+import java.time.LocalDate;
 
 @Data
 public class RecordModel {
@@ -14,7 +15,7 @@ public class RecordModel {
 
     private Double time;
 
-    private String date;
+    private LocalDate date;
 
     private Long userId;
 
