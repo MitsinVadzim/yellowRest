@@ -7,9 +7,7 @@ import java.sql.ResultSet;
 
 public interface ReportRepository{
 
-    RowMapper<ReportModel> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> {
-        return new ReportModel(resultSet.getLong("user_id"), resultSet.getInt("year"),
-                resultSet.getInt("week"), resultSet.getDouble("avgspeed"),
-                resultSet.getDouble("avtime"), resultSet.getInt("totaldistance"));
-    };
+    RowMapper<ReportModel> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> new ReportModel(resultSet.getLong("userid"), resultSet.getDouble("year"),
+            resultSet.getDouble("week"), resultSet.getDouble("avspeed"),
+            resultSet.getDouble("avtime"), resultSet.getLong("totaldistance"));
 }
