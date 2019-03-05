@@ -1,10 +1,11 @@
-package com.project.yellowRest.config.oauth;
+package com.project.yellowRest.config.google;
 
 import lombok.Getter;
 import lombok.ToString;
 
 import java.math.BigInteger;
 import java.security.Principal;
+import java.util.Objects;
 
 @ToString
 @Getter
@@ -17,7 +18,7 @@ public class GooglePrincipal implements Principal {
     private final String picture;
     private final String gender;
 
-    public GooglePrincipal(BigInteger id, String email, String given_name, String family_name, String picture, String gender) {
+    GooglePrincipal(BigInteger id, String email, String given_name, String family_name, String picture, String gender) {
         this.id = id;
         this.email = email;
         this.given_name = given_name;
@@ -37,7 +38,7 @@ public class GooglePrincipal implements Principal {
 
         GooglePrincipal that = (GooglePrincipal) o;
 
-        return id != null ? id.equals(that.id) : that.id == null;
+        return Objects.equals(id, that.id);
     }
 
     @Override

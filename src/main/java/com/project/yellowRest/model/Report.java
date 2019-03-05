@@ -3,7 +3,7 @@ package com.project.yellowRest.model;
 import lombok.Data;
 
 @Data
-public class ReportModel {
+public class Report {
     private int week;
     private int year;
     private Double avSpeed = 0D;
@@ -12,9 +12,9 @@ public class ReportModel {
     private Long userId;
 
 
-    public ReportModel(){}
+    public Report(){}
 
-    public ReportModel(Long userId, Double year, Double week, Double avSpeed, Double avTime, Long totalDistance) {
+    public Report(Long userId, Double year, Double week, Double avSpeed, Double avTime, Long totalDistance) {
         this.userId = userId;
         this.year = year.intValue();
         this.week = week.intValue();

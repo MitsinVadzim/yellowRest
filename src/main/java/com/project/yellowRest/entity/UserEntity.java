@@ -15,7 +15,7 @@ import java.util.Set;
 @Table(name = "usr")
 @Data
 @NoArgsConstructor
-public class User{
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,9 +41,9 @@ public class User{
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
-    private List<Record> records;
+    private List<RecordEntity> records;
 
-    public User(String username, String email) {
+    public UserEntity(String username, String email) {
         this.username = username;
         this.email = email;
     }

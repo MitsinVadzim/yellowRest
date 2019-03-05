@@ -1,5 +1,7 @@
-package com.project.yellowRest.config.oauth;
+package com.project.yellowRest.config.google;
 
+import com.project.yellowRest.config.oauth.AccessTokenValidationResult;
+import com.project.yellowRest.config.oauth.AccessTokenValidator;
 import com.project.yellowRest.service.UserService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,15 +23,15 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigInteger;
 import java.util.Map;
+
 import static java.util.Collections.singleton;
 
 public class GoogleTokenServices implements ResourceServerTokenServices {
 
     private final UserService userService;
-
     private final AccessTokenValidator tokenValidator;
-    private AccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
-    private RestTemplate restTemplate = new RestTemplate();
+    private final AccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
+    private final RestTemplate restTemplate = new RestTemplate();
     private String userInfoUrl;
 
 
@@ -44,6 +46,7 @@ public class GoogleTokenServices implements ResourceServerTokenServices {
         if (!validationResult.isValid()) {
             throw new UnapprovedClientAuthenticationException("The token is not intended to be used for this application.");
         }
+        userService.save(getUserInfo(accessToken));
         Map<String, ?> tokenInfo = validationResult.getTokenInfo();
         return getAuthentication(tokenInfo, accessToken);
 
@@ -73,7 +76,6 @@ public class GoogleTokenServices implements ResourceServerTokenServices {
                 (String)userInfo.get("picture"),
                 (String)userInfo.get("gender")
         );
-        userService.saveUser(principal);
         return new UsernamePasswordAuthenticationToken(principal, null, singleton(new SimpleGrantedAuthority("USER")));
     }
 

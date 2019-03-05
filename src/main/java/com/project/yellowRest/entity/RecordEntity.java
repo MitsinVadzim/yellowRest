@@ -11,7 +11,8 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-public class Record {
+@Table(name = "record")
+public class RecordEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -29,17 +30,17 @@ public class Record {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnore
-    private User author;
+    private UserEntity author;
 
     @Column(insertable = false, updatable = false, name = "user_id")
     private Long userId;
 
     private String filename;
 
-    public Record() {
+    public RecordEntity() {
     }
 
-    public Record(int distance, double time, LocalDate date, User author) {
+    public RecordEntity(int distance, double time, LocalDate date, UserEntity author) {
         this.distance = distance;
         this.time = time;
         this.date = date;

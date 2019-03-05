@@ -8,7 +8,7 @@ public class Application {
 
 //    @Bean
 //    public CommandLineRunner setupDefaultUser(UserService service) {
-//        return args -> service.addUser(new User(
+//        return args -> service.addUser(new (
 //                "user",
 //                "user",
 //                "rafunafiz@webmails.top"

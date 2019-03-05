@@ -1,24 +1,24 @@
 package com.project.yellowRest.service;
 
-import com.project.yellowRest.entity.Record;
-import com.project.yellowRest.entity.User;
+import com.project.yellowRest.entity.RecordEntity;
+import com.project.yellowRest.entity.UserEntity;
 import com.project.yellowRest.exception.RecordNotFoundException;
-import com.project.yellowRest.model.RecordModel;
+import com.project.yellowRest.model.Record;
 import com.project.yellowRest.repository.RecordRepository;
+import com.project.yellowRest.service.interfaces.IRecordService;
+import com.project.yellowRest.service.interfaces.IService;
 import com.project.yellowRest.util.ControllerUtils;
-import com.project.yellowRest.util.RecordConverterUtils;
+import com.project.yellowRest.util.RecordConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class RecordService {
+public class RecordService implements IService<Record>, IRecordService {
     private final RecordRepository recordRepository;
     private final UserService userService;
 
@@ -28,51 +28,56 @@ public class RecordService {
         this.userService = userService;
     }
 
-    public Iterable<RecordModel> findAll(Pageable pageable){
-        Iterable<Record> recordList = recordRepository.findAll(pageable);
-        return RecordConverterUtils.convertListToModels(recordList);
+    @Override
+    public List<Record> findAll(Pageable pageable){
+        Iterable<RecordEntity> recordList = recordRepository.findAll(pageable);
+        return RecordConverter.convertToModel(recordList);
     }
 
-    public RecordModel saveRecord(RecordModel recordModel, MultipartFile file, String uploadPath, String email) throws IOException {
-        User user = userService.getUserByEmail(email);
-        Record record = RecordConverterUtils.convertToEntity(recordModel, user);
-        ControllerUtils.saveFile(record, file, uploadPath);
-        return RecordConverterUtils.convertToModel(recordRepository.save(record));
+    @Override
+    public Record findById(Long id) {
+        return RecordConverter.convertToModel(recordRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id)));
     }
 
-    public RecordModel getModelById(Long id){
-        return RecordConverterUtils.convertToModel(recordRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id)));
+    @Override
+    public Record saveRecord(Record record, MultipartFile file, String uploadPath, String email) throws IOException {
+        UserEntity userEntity = userService.getUserByEmail(email);
+        RecordEntity recordEntity = RecordConverter.convertToEntity(record, userEntity);
+        ControllerUtils.saveFile(recordEntity, file, uploadPath);
+        return RecordConverter.convertToModel(recordRepository.save(recordEntity));
     }
 
-    public Record getEntityById(Long id){
+    private RecordEntity getEntityById(Long id){
         return recordRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
     }
 
-    public void updateRecordProperties(Record record, RecordModel recordModel){
-        record.setDate(recordModel.getDate());
-        record.setDistance(recordModel.getDistance());
-        record.setFilename(recordModel.getFilename());
-        record.setTime(recordModel.getTime());
+    private void updateRecordProperties(RecordEntity recordEntity, Record record){
+        recordEntity.setDate(record.getDate());
+        recordEntity.setDistance(record.getDistance());
+        recordEntity.setFilename(record.getFilename());
+        recordEntity.setTime(record.getTime());
     }
 
-    public RecordModel update(RecordModel recordModel, Long recordId, String email){
-        Record record = getEntityById(recordId);
-        if(isAuthor(email, record)){
-            updateRecordProperties(record, recordModel);
-            return RecordConverterUtils.convertToModel(recordRepository.save(record));
+    @Override
+    public Record update(Record record, Long recordId, String email){
+        RecordEntity recordEntity = getEntityById(recordId);
+        if(isAuthor(email, recordEntity)){
+            updateRecordProperties(recordEntity, record);
+            return RecordConverter.convertToModel(recordRepository.save(recordEntity));
         }
-        return recordModel;
+        return record;
     }
 
-    public boolean isAuthor(String userEmail, Record record){
-        User user = userService.getUserByEmail(userEmail);
-        return user.getId().equals(record.getUserId());
+    private boolean isAuthor(String userEmail, RecordEntity recordEntity){
+        UserEntity userEntity = userService.getUserByEmail(userEmail);
+        return userEntity.getId().equals(recordEntity.getUserId());
     }
 
+    @Override
     public void delete(Long recordId, String email){
-        Record record = getEntityById(recordId);
-        if(isAuthor(email, record)){
-            recordRepository.delete(record);
+        RecordEntity recordEntity = getEntityById(recordId);
+        if(isAuthor(email, recordEntity)){
+            recordRepository.delete(recordEntity);
         }
     }
 }

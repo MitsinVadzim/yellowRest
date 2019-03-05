@@ -1,6 +1,6 @@
 package com.project.yellowRest.util;
 
-import com.project.yellowRest.entity.Record;
+import com.project.yellowRest.entity.RecordEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class ControllerUtils {
 
-    public static void saveFile(Record record, MultipartFile file, String uploadPath) throws IOException {
+    public static void saveFile(RecordEntity record, MultipartFile file, String uploadPath) throws IOException {
         if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {

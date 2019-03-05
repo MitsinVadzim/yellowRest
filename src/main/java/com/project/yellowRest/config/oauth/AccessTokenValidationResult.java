@@ -3,8 +3,8 @@ package com.project.yellowRest.config.oauth;
 import java.util.Map;
 
 public class AccessTokenValidationResult {
-    private boolean valid;
-    private Map<String, ?> tokenInfo;
+    private final boolean valid;
+    private final Map<String, ?> tokenInfo;
 
     public AccessTokenValidationResult(boolean valid, Map<String, ?> tokenInfo) {
         this.valid = valid;

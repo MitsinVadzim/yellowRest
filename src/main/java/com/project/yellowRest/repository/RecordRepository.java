@@ -1,17 +1,13 @@
 package com.project.yellowRest.repository;
 
-import com.project.yellowRest.entity.Record;
-import com.project.yellowRest.entity.Report;
+import com.project.yellowRest.entity.RecordEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+public interface RecordRepository extends JpaRepository<RecordEntity, Long> {
 
-public interface RecordRepository extends PagingAndSortingRepository<Record, Long> {
-
-    Page<Record> findByUserId(Long userId, Pageable pageable);
+    Page<RecordEntity> findByUserId(Long userId, Pageable pageable);
 
 
 }

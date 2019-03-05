@@ -1,16 +1,17 @@
 package com.project.yellowRest.service;
 
-import com.project.yellowRest.config.oauth.GooglePrincipal;
-import com.project.yellowRest.entity.Record;
+import com.project.yellowRest.entity.RecordEntity;
 import com.project.yellowRest.entity.Role;
-import com.project.yellowRest.entity.User;
+import com.project.yellowRest.entity.UserEntity;
 import com.project.yellowRest.exception.UserNotFoundException;
-import com.project.yellowRest.model.RecordModel;
-import com.project.yellowRest.model.UserModel;
+import com.project.yellowRest.model.Record;
+import com.project.yellowRest.model.User;
 import com.project.yellowRest.repository.RecordRepository;
 import com.project.yellowRest.repository.UserRepository;
-import com.project.yellowRest.util.RecordConverterUtils;
-import com.project.yellowRest.util.UserConverterUtils;
+import com.project.yellowRest.service.interfaces.IService;
+import com.project.yellowRest.service.interfaces.IUserService;
+import com.project.yellowRest.util.RecordConverter;
+import com.project.yellowRest.util.UserConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,11 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
-public class UserService{
+public class UserService implements IService<User>, IUserService {
 
     private final UserRepository userRepository;
     private final RecordRepository recordRepository;
@@ -33,42 +36,41 @@ public class UserService{
         this.recordRepository = recordRepository;
     }
 
-    public Iterable<User> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    @Override
+    public List<User> findAll(Pageable pageable) {
+        return UserConverter.convertToModel(userRepository.findAll(pageable));
     }
 
-    public String saveUser(GooglePrincipal principal){
-        User userDb = userRepository.findByEmail(principal.getEmail());
-        if(userDb != null){
-            return "User exist";
-        }else{
-            userDb = new User();
-            userDb.setEmail(principal.getEmail());
-            userDb.setActive(true);
-            userDb.setUsername(principal.getName());
-            userDb.setRoles(Collections.singleton(Role.USER));
-            userDb.setUserpic(principal.getPicture());
-            userDb.setGender(principal.getGender());
-            userDb.setLastVisit(LocalDateTime.now());
-            userRepository.save(userDb);
-            return "User not exist";
+    @Override
+    public User findById(Long id) {
+        return UserConverter.convertToModel(userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id)));
+    }
+
+    @Override
+    public void save(Map<String, ?> userInfo){
+        String email = (String)userInfo.get("email");
+        UserEntity userEntityDb = userRepository.findByEmail(email);
+        if(userEntityDb == null){
+            userEntityDb = new UserEntity();
+            userEntityDb.setEmail(email);
+            userEntityDb.setActive(true);
+            userEntityDb.setUsername((String)userInfo.get("given_name"));
+            userEntityDb.setRoles(Collections.singleton(Role.USER));
+            userEntityDb.setUserpic((String)userInfo.get("picture"));
+            userEntityDb.setGender((String)userInfo.get("gender"));
+            userEntityDb.setLastVisit(LocalDateTime.now());
+            userRepository.save(userEntityDb);
         }
     }
 
-    public UserModel getUserModel(String email){
-        return UserConverterUtils.convertToModel(userRepository.findByEmail(email));
-    }
-
-    public User getUserByEmail(String email){
+    @Override
+    public UserEntity getUserByEmail(String email){
         return userRepository.findByEmail(email);
     }
 
-    public User getUserById(Long userId){
-        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-    }
-
-    public Iterable<RecordModel> getUserRecords(Long userId, Pageable pageable) {
-        Page<Record> records = recordRepository.findByUserId(userId, pageable);
-        return RecordConverterUtils.convertListToModels(records);
+    @Override
+    public List<Record> getUserRecords(Long userId, Pageable pageable) {
+        Page<RecordEntity> records = recordRepository.findByUserId(userId, pageable);
+        return RecordConverter.convertToModel(records);
     }
 }

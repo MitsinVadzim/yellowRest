@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-public class UserModel {
+public class User {
 
     @Null
     private Long id;

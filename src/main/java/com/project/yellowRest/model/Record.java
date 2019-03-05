@@ -6,7 +6,7 @@ import javax.validation.constraints.Null;
 import java.time.LocalDate;
 
 @Data
-public class RecordModel {
+public class Record {
 
     @Null
     private Long id;

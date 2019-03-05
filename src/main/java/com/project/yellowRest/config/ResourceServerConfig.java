@@ -1,15 +1,14 @@
 package com.project.yellowRest.config;
 
-import com.project.yellowRest.config.oauth.*;
-import com.project.yellowRest.repository.UserRepository;
+import com.project.yellowRest.config.oauth.AccessTokenValidator;
+import com.project.yellowRest.config.google.GoogleAccessTokenValidator;
+import com.project.yellowRest.config.google.GoogleTokenServices;
 import com.project.yellowRest.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
@@ -17,8 +16,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 
 @Configuration
@@ -38,6 +36,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         return new ResourceServerProperties();
     }
 
+    @Bean
+    public RestTemplate getRestTemplate(){
+        return new RestTemplate();
+    }
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -55,7 +58,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     }
 
     @Override
-    public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+    public void configure(ResourceServerSecurityConfigurer resources){
         resources.resourceId(google().getClientId());
     }
 
@@ -68,7 +71,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Bean
     public AccessTokenValidator tokenValidator() {
-        GoogleAccessTokenValidator accessTokenValidator = new GoogleAccessTokenValidator();
+        GoogleAccessTokenValidator accessTokenValidator = new GoogleAccessTokenValidator(getRestTemplate());
         accessTokenValidator.setClientId(google().getClientId());
         accessTokenValidator.setCheckTokenUrl(googleResource().getTokenInfoUri());
         return accessTokenValidator;

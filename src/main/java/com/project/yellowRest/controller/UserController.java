@@ -1,6 +1,6 @@
 package com.project.yellowRest.controller;
 
-import com.project.yellowRest.entity.User;
+import com.project.yellowRest.model.User;
 import com.project.yellowRest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -26,13 +26,13 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("{user}")
     public User getUser(@PathVariable("user") Long userId) {
-        return userService.getUserById(userId);
+        return userService.findById(userId);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("{user}")
     public User updateUser(@PathVariable("user") Long userId) {
-        return userService.getUserById(userId);
+        return userService.findById(userId);
     }
 
 }
