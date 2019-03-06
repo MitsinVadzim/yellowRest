@@ -20,6 +20,7 @@ public class ReportController {
 
     @GetMapping("/reports")
     public List<Report> showReports() {
-        return reportService.showReports();
+        //return reportService.showReports();
+        return null;
     }
 }

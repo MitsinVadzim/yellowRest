@@ -1,13 +1,14 @@
 package com.project.yellowRest.config;
 
-import com.project.yellowRest.config.oauth.AccessTokenValidator;
 import com.project.yellowRest.config.google.GoogleAccessTokenValidator;
 import com.project.yellowRest.config.google.GoogleTokenServices;
+import com.project.yellowRest.config.oauth.AccessTokenValidator;
 import com.project.yellowRest.service.UserService;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 @Configuration
+@Profile("test")
 @EnableResourceServer
 @EnableWebSecurity
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
@@ -45,14 +47,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
-                .antMatchers("/", "/v2/api-docs", "/google/login", "/home",
-                "/configuration/ui",
-                "/swagger-resources",
-                "/configuration/security",
-                "/swagger-ui.html",
-                "/webjars/**").permitAll()
-                .antMatchers("/admin").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
         ;
 
     }

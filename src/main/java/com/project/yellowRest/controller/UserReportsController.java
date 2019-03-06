@@ -19,8 +19,8 @@ public class UserReportsController {
         this.reportService = reportService;
     }
 
-    @GetMapping("/user-reports/{user}")
-    public List<Report> showUserReports(@PathVariable("user") Long userId){
+    @GetMapping("/users/{userid}/reports")
+    public List<Report> showUserReports(@PathVariable("userid") Long userId){
         return reportService.showReportsByUserId(userId);
     }
 }

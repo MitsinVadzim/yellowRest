@@ -27,7 +27,7 @@ public class RecordController {
 
     @GetMapping("/records")
     public Iterable<Record> showAll(@RequestParam("size") int size, @RequestParam("page") int page) {
-        Pageable pageable = new PageRequest(page, size);
+        Pageable pageable = PageRequest.of(page, size);
         return recordService.findAll(pageable);
     }
 
