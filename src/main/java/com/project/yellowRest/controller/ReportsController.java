@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class UserReportsController {
+public class ReportsController {
 
     private final ReportService reportService;
 
     @Autowired
-    public UserReportsController(ReportService reportService) {
+    public ReportsController(ReportService reportService) {
         this.reportService = reportService;
     }
 

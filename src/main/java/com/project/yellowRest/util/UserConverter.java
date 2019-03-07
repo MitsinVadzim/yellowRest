@@ -1,8 +1,6 @@
 package com.project.yellowRest.util;
 
-import com.project.yellowRest.entity.RecordEntity;
 import com.project.yellowRest.entity.UserEntity;
-import com.project.yellowRest.model.Record;
 import com.project.yellowRest.model.User;
 
 import java.util.ArrayList;
@@ -34,9 +32,9 @@ public class UserConverter {
         return userEntity;
     }
 
-    public static List<User> convertToModel(Iterable<UserEntity> usersEntity){
+    public static List<User> convertToModel(List<UserEntity> userEntities){
         List<User> users = new ArrayList<>();
-        for (UserEntity userEntity : usersEntity) {
+        for (UserEntity userEntity : userEntities) {
             users.add(convertToModel(userEntity));
         }
         return users;

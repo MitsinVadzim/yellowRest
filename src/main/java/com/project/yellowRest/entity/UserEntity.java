@@ -27,6 +27,7 @@ public class UserEntity {
 
     private String gender;
     private String userpic;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime lastVisit;
 

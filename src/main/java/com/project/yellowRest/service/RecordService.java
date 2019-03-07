@@ -7,15 +7,14 @@ import com.project.yellowRest.model.Record;
 import com.project.yellowRest.repository.RecordRepository;
 import com.project.yellowRest.service.interfaces.IRecordService;
 import com.project.yellowRest.service.interfaces.IService;
-import com.project.yellowRest.util.ControllerUtils;
 import com.project.yellowRest.util.RecordConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class RecordService implements IService<Record>, IRecordService {
@@ -36,14 +35,25 @@ public class RecordService implements IService<Record>, IRecordService {
 
     @Override
     public Record findById(Long id) {
-        return RecordConverter.convertToModel(recordRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id)));
+        return RecordConverter.convertToModel((recordRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(id))));
     }
 
     @Override
-    public Record saveRecord(Record record, MultipartFile file, String uploadPath, String email) throws IOException {
-        UserEntity userEntity = userService.getUserByEmail(email);
+    @Transactional
+    public Record findRecordByUserId(Long userId, Long recordId) {
+        UserEntity userEntity = userService.getUserEntityById(userId);
+        try {
+            RecordEntity recordEntity = userEntity.getRecords().get(recordId.intValue() - 1);
+            return RecordConverter.convertToModel(recordEntity);
+        }catch (IndexOutOfBoundsException ex){
+            throw new RecordNotFoundException(recordId);
+        }
+    }
+
+    @Override
+    public Record saveRecord(Record record, String email) {
+        UserEntity userEntity = userService.getUserEntityByEmail(email);
         RecordEntity recordEntity = RecordConverter.convertToEntity(record, userEntity);
-        ControllerUtils.saveFile(recordEntity, file, uploadPath);
         return RecordConverter.convertToModel(recordRepository.save(recordEntity));
     }
 
@@ -54,7 +64,6 @@ public class RecordService implements IService<Record>, IRecordService {
     private void updateRecordProperties(RecordEntity recordEntity, Record record){
         recordEntity.setDate(record.getDate());
         recordEntity.setDistance(record.getDistance());
-        recordEntity.setFilename(record.getFilename());
         recordEntity.setTime(record.getTime());
     }
 
@@ -69,7 +78,7 @@ public class RecordService implements IService<Record>, IRecordService {
     }
 
     private boolean isAuthor(String userEmail, RecordEntity recordEntity){
-        UserEntity userEntity = userService.getUserByEmail(userEmail);
+        UserEntity userEntity = userService.getUserEntityByEmail(userEmail);
         return userEntity.getId().equals(recordEntity.getUserId());
     }
 

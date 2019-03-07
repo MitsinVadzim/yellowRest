@@ -12,7 +12,6 @@ public class RecordConverter {
         Record record = new Record();
         record.setDate(recordEntity.getDate());
         record.setDistance(recordEntity.getDistance());
-        record.setFilename(recordEntity.getFilename());
         record.setId(recordEntity.getId());
         record.setTime(recordEntity.getTime());
         record.setUserId(recordEntity.getUserId());
@@ -23,7 +22,6 @@ public class RecordConverter {
         RecordEntity recordEntity = new RecordEntity();
         recordEntity.setDate(record.getDate());
         recordEntity.setDistance(record.getDistance());
-        recordEntity.setFilename(record.getFilename());
         recordEntity.setId(record.getId());
         recordEntity.setTime(record.getTime());
         recordEntity.setUserId(record.getUserId());

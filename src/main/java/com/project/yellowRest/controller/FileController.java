@@ -28,17 +28,17 @@ public class FileController {
         this.fileStorageService = fileStorageService;
     }
 
-    @PostMapping("/uploadFile")
+    @PostMapping("/file")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
         return fileStorageService.storeFile(file);
     }
 
-    @PostMapping("/uploadMultipleFiles")
+    @PostMapping("/files")
     public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files){
         return fileStorageService.storeFile(files);
     }
 
-    @GetMapping("/downloadFile/{fileName:.+}")
+    @GetMapping("/files/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
         Resource resource = fileStorageService.loadFileAsResource(fileName);
 

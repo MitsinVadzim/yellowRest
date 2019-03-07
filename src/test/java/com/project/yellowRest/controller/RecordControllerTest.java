@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest()
-@AutoConfigureMockMvc(secure = false)
+@AutoConfigureMockMvc()
 @RunWith(SpringJUnit4ClassRunner.class)
 public class RecordControllerTest{
 
@@ -39,17 +39,24 @@ public class RecordControllerTest{
     RecordController recordController;
 
     @Test
-    public void showAll() throws Exception {
+    public void showAllSuccess() throws Exception {
         List<Record> records = Arrays.asList(
-                new Record(1L, 5000, 500D, LocalDate.now(), 1L, ""),
-                new Record(2L, 4000, 20D, LocalDate.now(), 1L, ""));
+                new Record(1L, 5000, 500D, LocalDate.now(), 1L ),
+                new Record(2L, 4000, 20D, LocalDate.now(), 1L));
         Pageable pageable = PageRequest.of(0, 4);
         given(recordService.findAll(pageable)).willReturn(records);
-        mockMvc.perform(MockMvcRequestBuilders.get("/records").param("page", "0")
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/1/records").param("page", "0")
                 .param("size", "3"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
         ;
+    }
+
+    @Test
+    public void ShowAllWithoutPageableParameters() throws Exception{
+        given(recordService.findAll(null)).willReturn(null);
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/1/records"))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test

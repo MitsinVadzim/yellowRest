@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceS
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @EnableResourceServer
 @EnableWebSecurity
+@Profile("!test")
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Bean

@@ -9,6 +9,7 @@ import java.util.Map;
 
 public interface IUserService {
     void save(Map<String, ?> userInfo);
-    UserEntity getUserByEmail(String email);
+    UserEntity getUserEntityByEmail(String email);
     List<Record> getUserRecords(Long userId, Pageable pageable);
+    UserEntity getUserEntityById(Long userId);
 }

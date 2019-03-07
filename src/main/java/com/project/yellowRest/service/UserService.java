@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -38,7 +39,7 @@ public class UserService implements IService<User>, IUserService {
 
     @Override
     public List<User> findAll(Pageable pageable) {
-        return UserConverter.convertToModel(userRepository.findAll(pageable));
+        return UserConverter.convertToModel(userRepository.findAll(pageable).stream().collect(Collectors.toList()));
     }
 
     @Override
@@ -49,23 +50,32 @@ public class UserService implements IService<User>, IUserService {
     @Override
     public void save(Map<String, ?> userInfo){
         String email = (String)userInfo.get("email");
-        UserEntity userEntityDb = userRepository.findByEmail(email);
-        if(userEntityDb == null){
-            userEntityDb = new UserEntity();
-            userEntityDb.setEmail(email);
-            userEntityDb.setActive(true);
-            userEntityDb.setUsername((String)userInfo.get("given_name"));
-            userEntityDb.setRoles(Collections.singleton(Role.USER));
-            userEntityDb.setUserpic((String)userInfo.get("picture"));
-            userEntityDb.setGender((String)userInfo.get("gender"));
-            userEntityDb.setLastVisit(LocalDateTime.now());
-            userRepository.save(userEntityDb);
+        UserEntity existingUser = userRepository.findByEmail(email);
+        if(existingUser == null){
+            createUser(userInfo, email);
         }
     }
 
+    private void createUser(Map<String, ?> userInfo, String email) {
+        UserEntity user = new UserEntity();
+        user.setEmail(email);
+        user.setActive(true);
+        user.setUsername((String)userInfo.get("given_name"));
+        user.setRoles(Collections.singleton(Role.USER));
+        user.setUserpic((String)userInfo.get("picture"));
+        user.setGender((String)userInfo.get("gender"));
+        user.setLastVisit(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
     @Override
-    public UserEntity getUserByEmail(String email){
+    public UserEntity getUserEntityByEmail(String email){
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public UserEntity getUserEntityById(Long userId){
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     @Override

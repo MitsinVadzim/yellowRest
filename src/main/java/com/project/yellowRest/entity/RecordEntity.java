@@ -35,8 +35,6 @@ public class RecordEntity {
     @Column(insertable = false, updatable = false, name = "user_id")
     private Long userId;
 
-    private String filename;
-
     public RecordEntity() {
     }
 

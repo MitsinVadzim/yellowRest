@@ -27,13 +27,13 @@ import org.springframework.web.client.RestTemplate;
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Bean
-    @ConfigurationProperties("google.client")
+//    @ConfigurationProperties("google.client")
     public AuthorizationCodeResourceDetails google() {
         return new AuthorizationCodeResourceDetails();
     }
 
     @Bean
-    @ConfigurationProperties("google.resource")
+//    @ConfigurationProperties("google.resource")
     public ResourceServerProperties googleResource() {
         return new ResourceServerProperties();
     }

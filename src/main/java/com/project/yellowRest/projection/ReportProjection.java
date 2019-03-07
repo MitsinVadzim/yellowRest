@@ -1,9 +1,9 @@
-package com.project.yellowRest.model;
+package com.project.yellowRest.projection;
 
 import lombok.Data;
 
 @Data
-public class Report {
+public class ReportProjection {
     private int week;
     private int year;
     private Double avSpeed = 0D;
@@ -12,12 +12,12 @@ public class Report {
     private Long userId;
 
 
-    public Report(){}
+    public ReportProjection(){}
 
-    public Report(Long userId, int year, int week, Double avSpeed, Double avTime, Long totalDistance) {
+    public ReportProjection(Long userId, Double year, Double week, Double avSpeed, Double avTime, Long totalDistance) {
         this.userId = userId;
-        this.year = year;
-        this.week = week;
+        this.year = year.intValue();
+        this.week = week.intValue();
         this.avSpeed = avSpeed;
         this.avTime = avTime;
         this.totalDistance = totalDistance;
