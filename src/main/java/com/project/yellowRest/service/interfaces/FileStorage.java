@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-public interface IFileStorage {
+public interface FileStorage {
     UploadFileResponse storeFile(MultipartFile file);
     List<UploadFileResponse> storeFile(MultipartFile[] files);
     Resource loadFileAsResource(String fileName);

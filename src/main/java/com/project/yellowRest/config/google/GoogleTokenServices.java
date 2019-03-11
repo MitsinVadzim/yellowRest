@@ -2,11 +2,10 @@ package com.project.yellowRest.config.google;
 
 import com.project.yellowRest.config.oauth.AccessTokenValidationResult;
 import com.project.yellowRest.config.oauth.AccessTokenValidator;
-import com.project.yellowRest.service.UserService;
+import com.project.yellowRest.service.UserServiceImpl;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -21,21 +20,20 @@ import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConv
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigInteger;
 import java.util.Map;
 
 import static java.util.Collections.singleton;
 
 public class GoogleTokenServices implements ResourceServerTokenServices {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final AccessTokenValidator tokenValidator;
     private final AccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
     private final RestTemplate restTemplate = new RestTemplate();
     private String userInfoUrl;
 
 
-    public GoogleTokenServices(AccessTokenValidator tokenValidator, UserService userService) {
+    public GoogleTokenServices(AccessTokenValidator tokenValidator, UserServiceImpl userService) {
         this.tokenValidator = tokenValidator;
         this.userService = userService;
     }
@@ -59,24 +57,8 @@ public class GoogleTokenServices implements ResourceServerTokenServices {
     }
 
     private Authentication getAuthenticationToken(String accessToken) {
-        Map<String, ?> userInfo = getUserInfo(accessToken);
-        String idStr = (String) userInfo.get("id");
-        if (idStr == null) {
-            throw new InternalAuthenticationServiceException("Cannot get id from user info");
-        }
-        String email = (String) userInfo.get("email");
-        if (email == null) {
-            throw new InternalAuthenticationServiceException("Cannot get email(username) from user info");
-        }
-        GooglePrincipal principal = new GooglePrincipal(
-                new BigInteger(idStr),
-                email,
-                (String)userInfo.get("given_name"),
-                (String)userInfo.get("family_name"),
-                (String)userInfo.get("picture"),
-                (String)userInfo.get("gender")
-        );
-        return new UsernamePasswordAuthenticationToken(principal, null, singleton(new SimpleGrantedAuthority("USER")));
+        GooglePrincipal googlePrincipal = getUserInfo(accessToken);
+        return new UsernamePasswordAuthenticationToken(googlePrincipal, null, singleton(new SimpleGrantedAuthority("USER")));
     }
 
     private HttpHeaders getHttpHeaders(String accessToken) {
@@ -85,10 +67,9 @@ public class GoogleTokenServices implements ResourceServerTokenServices {
         return headers;
     }
 
-    private Map<String, ?> getUserInfo(String accessToken) {
+    private GooglePrincipal getUserInfo(String accessToken) {
         HttpHeaders headers = getHttpHeaders(accessToken);
-        Map map = restTemplate.exchange(userInfoUrl, HttpMethod.GET, new HttpEntity<>(headers), Map.class).getBody();
-        return (Map<String, Object>) map;
+        return restTemplate.exchange(userInfoUrl, HttpMethod.GET, new HttpEntity<>(headers), GooglePrincipal.class).getBody();
     }
 
     @Override

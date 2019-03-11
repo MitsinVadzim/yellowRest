@@ -11,25 +11,12 @@ public class UserConverter {
         User user = new User();
         user.setActive(userEntity.isActive());
         user.setEmail(userEntity.getEmail());
-        user.setGender(userEntity.getGender());
         user.setId(userEntity.getId());
         user.setLastVisit(userEntity.getLastVisit());
         user.setUsername(userEntity.getUsername());
         user.setUserpic(userEntity.getUserpic());
         user.setRoles(userEntity.getRoles());
         return user;
-    }
-
-    public static UserEntity convertToEntity(User user){
-        UserEntity userEntity = new UserEntity();
-        userEntity.setActive(user.isActive());
-        userEntity.setEmail(user.getEmail());
-        userEntity.setGender(user.getGender());
-        userEntity.setId(user.getId());
-        userEntity.setLastVisit(user.getLastVisit());
-        userEntity.setUsername(user.getUsername());
-        userEntity.setUserpic(user.getUserpic());
-        return userEntity;
     }
 
     public static List<User> convertToModel(List<UserEntity> userEntities){

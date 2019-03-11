@@ -4,6 +4,6 @@ import com.project.yellowRest.model.Report;
 
 import java.util.List;
 
-public interface IReportService {
+public interface ReportService {
     List<Report> showReportsByUserId(Long userId);
 }

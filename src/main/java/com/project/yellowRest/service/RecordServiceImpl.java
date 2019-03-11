@@ -5,31 +5,29 @@ import com.project.yellowRest.entity.UserEntity;
 import com.project.yellowRest.exception.RecordNotFoundException;
 import com.project.yellowRest.model.Record;
 import com.project.yellowRest.repository.RecordRepository;
-import com.project.yellowRest.service.interfaces.IRecordService;
-import com.project.yellowRest.service.interfaces.IService;
+import com.project.yellowRest.service.interfaces.EntityService;
 import com.project.yellowRest.util.RecordConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
-public class RecordService implements IService<Record>, IRecordService {
+public class RecordServiceImpl implements EntityService<Record>, com.project.yellowRest.service.interfaces.RecordService {
     private final RecordRepository recordRepository;
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @Autowired
-    public RecordService(RecordRepository recordRepository, UserService userService) {
+    public RecordServiceImpl(RecordRepository recordRepository, UserServiceImpl userService) {
         this.recordRepository = recordRepository;
         this.userService = userService;
     }
 
     @Override
     public List<Record> findAll(Pageable pageable){
-        Iterable<RecordEntity> recordList = recordRepository.findAll(pageable);
+        List<RecordEntity> recordList = recordRepository.findAll(pageable).stream().collect(Collectors.toList());
         return RecordConverter.convertToModel(recordList);
     }
 
@@ -39,20 +37,8 @@ public class RecordService implements IService<Record>, IRecordService {
     }
 
     @Override
-    @Transactional
-    public Record findRecordByUserId(Long userId, Long recordId) {
+    public Record saveRecord(Record record, Long userId) {
         UserEntity userEntity = userService.getUserEntityById(userId);
-        try {
-            RecordEntity recordEntity = userEntity.getRecords().get(recordId.intValue() - 1);
-            return RecordConverter.convertToModel(recordEntity);
-        }catch (IndexOutOfBoundsException ex){
-            throw new RecordNotFoundException(recordId);
-        }
-    }
-
-    @Override
-    public Record saveRecord(Record record, String email) {
-        UserEntity userEntity = userService.getUserEntityByEmail(email);
         RecordEntity recordEntity = RecordConverter.convertToEntity(record, userEntity);
         return RecordConverter.convertToModel(recordRepository.save(recordEntity));
     }

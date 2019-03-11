@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotBlank(message = "Username cannot be empty")
@@ -25,7 +25,6 @@ public class UserEntity {
 
     private boolean active;
 
-    private String gender;
     private String userpic;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -45,6 +44,12 @@ public class UserEntity {
     private List<RecordEntity> records;
 
     public UserEntity(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
+
+    public UserEntity(Long id,String username, String email) {
+        this.id = id;
         this.username = username;
         this.email = email;
     }

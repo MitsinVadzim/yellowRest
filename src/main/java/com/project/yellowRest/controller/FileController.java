@@ -1,7 +1,7 @@
 package com.project.yellowRest.controller;
 
 import com.project.yellowRest.response.UploadFileResponse;
-import com.project.yellowRest.service.FileStorageService;
+import com.project.yellowRest.service.FileStorageServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,26 +21,26 @@ public class FileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
-    private final FileStorageService fileStorageService;
+    private final FileStorageServiceImpl fileStorageServiceImpl;
 
     @Autowired
-    public FileController(FileStorageService fileStorageService) {
-        this.fileStorageService = fileStorageService;
+    public FileController(FileStorageServiceImpl fileStorageServiceImpl) {
+        this.fileStorageServiceImpl = fileStorageServiceImpl;
     }
 
     @PostMapping("/file")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        return fileStorageService.storeFile(file);
+        return fileStorageServiceImpl.storeFile(file);
     }
 
     @PostMapping("/files")
     public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files){
-        return fileStorageService.storeFile(files);
+        return fileStorageServiceImpl.storeFile(files);
     }
 
     @GetMapping("/files/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
+        Resource resource = fileStorageServiceImpl.loadFileAsResource(fileName);
 
         String contentType = null;
         try {

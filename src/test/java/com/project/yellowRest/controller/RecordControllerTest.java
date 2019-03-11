@@ -1,10 +1,9 @@
 package com.project.yellowRest.controller;
 
 import com.project.yellowRest.model.Record;
-import com.project.yellowRest.service.RecordService;
+import com.project.yellowRest.service.RecordServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,16 +32,15 @@ public class RecordControllerTest{
 
 
     @MockBean
-    RecordService recordService;
+    RecordServiceImpl recordService;
 
-    @InjectMocks
-    RecordController recordController;
+
 
     @Test
     public void showAllSuccess() throws Exception {
         List<Record> records = Arrays.asList(
-                new Record(1L, 5000, 500D, LocalDate.now(), 1L ),
-                new Record(2L, 4000, 20D, LocalDate.now(), 1L));
+                new Record(1L, 5000, 500D, LocalDateTime.now(), 1L ),
+                new Record(2L, 4000, 20D, LocalDateTime.now(), 1L));
         Pageable pageable = PageRequest.of(0, 4);
         given(recordService.findAll(pageable)).willReturn(records);
         mockMvc.perform(MockMvcRequestBuilders.get("/users/1/records").param("page", "0")
@@ -56,16 +54,15 @@ public class RecordControllerTest{
     public void ShowAllWithoutPageableParameters() throws Exception{
         given(recordService.findAll(null)).willReturn(null);
         mockMvc.perform(MockMvcRequestBuilders.get("/users/1/records"))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().is(400));
     }
 
     @Test
-    public void save() {
-
-    }
-
-    @Test
-    public void showOne() {
+    public void showOne() throws Exception {
+        Record record = new Record(1L, 5000, 500D, LocalDateTime.now(), 1L);
+        given(recordService.findById(1L)).willReturn(record);
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/1/records/1"))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -75,18 +72,4 @@ public class RecordControllerTest{
     @Test
     public void delete() {
     }
-
-//    @Configuration
-//    @Import(Application.class) // the actual configuration
-//    public static class ResourceServerConfig extends ResourceServerConfigurerAdapter
-//    {
-//        @Override
-//        public void configure(HttpSecurity http) throws Exception {
-//            http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//            http.authorizeRequests()
-//                    .anyRequest().permitAll();
-//            ;
-//
-//        }
-//    }
 }

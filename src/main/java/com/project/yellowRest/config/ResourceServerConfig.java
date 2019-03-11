@@ -3,7 +3,7 @@ package com.project.yellowRest.config;
 import com.project.yellowRest.config.oauth.AccessTokenValidator;
 import com.project.yellowRest.config.google.GoogleAccessTokenValidator;
 import com.project.yellowRest.config.google.GoogleTokenServices;
-import com.project.yellowRest.service.UserService;
+import com.project.yellowRest.service.UserServiceImpl;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -49,10 +49,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/", "/v2/api-docs", "/google/login", "/home",
                 "/configuration/ui",
-                "/swagger-resources",
+                "/swagger-resources/*",
+                "/swagger-resources/**",
                 "/configuration/security",
                 "/swagger-ui.html",
-                "/webjars/**").permitAll()
+                        "/webjars/**"
+                        ).permitAll()
                 .antMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated()
         ;
@@ -65,7 +67,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     }
 
     @Bean
-    public ResourceServerTokenServices tokenServices(AccessTokenValidator tokenValidator, UserService userService) {
+    public ResourceServerTokenServices tokenServices(AccessTokenValidator tokenValidator, UserServiceImpl userService) {
         GoogleTokenServices googleTokenServices = new GoogleTokenServices(tokenValidator, userService);
         googleTokenServices.setUserInfoUrl(googleResource().getUserInfoUri());
         return googleTokenServices;

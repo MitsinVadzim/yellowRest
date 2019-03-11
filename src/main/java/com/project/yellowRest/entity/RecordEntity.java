@@ -7,7 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -25,7 +25,7 @@ public class RecordEntity {
     private Double time;
 
     @NotBlank(message = "Please enter race date")
-    private LocalDate date;
+    private LocalDateTime date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -38,7 +38,16 @@ public class RecordEntity {
     public RecordEntity() {
     }
 
-    public RecordEntity(int distance, double time, LocalDate date, UserEntity author) {
+    public RecordEntity(int distance, double time, LocalDateTime date, UserEntity author) {
+        this.distance = distance;
+        this.time = time;
+        this.date = date;
+        this.author = author;
+        this.userId = author.getId();
+    }
+
+    public RecordEntity(Long id, int distance, double time, LocalDateTime date, UserEntity author) {
+        this.id = id;
         this.distance = distance;
         this.time = time;
         this.date = date;

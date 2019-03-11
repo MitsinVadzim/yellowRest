@@ -3,7 +3,7 @@ package com.project.yellowRest.model;
 import lombok.Data;
 
 import javax.validation.constraints.Null;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class Record {
@@ -15,12 +15,12 @@ public class Record {
 
     private Double time;
 
-    private LocalDate date;
+    private LocalDateTime date;
 
     private Long userId;
 
 
-    public Record(Long id, Integer distance, Double time, LocalDate date, Long userId){
+    public Record(Long id, Integer distance, Double time, LocalDateTime date, Long userId){
         this.id = id;
         this.distance = distance;
         this.time = time;

@@ -18,8 +18,6 @@ public class User {
 
     private boolean active;
 
-    private String gender;
-
     private String userpic;
 
     private LocalDateTime lastVisit;

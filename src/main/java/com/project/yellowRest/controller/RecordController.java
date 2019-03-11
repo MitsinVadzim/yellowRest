@@ -1,8 +1,8 @@
 package com.project.yellowRest.controller;
 
 import com.project.yellowRest.model.Record;
-import com.project.yellowRest.service.RecordService;
-import com.project.yellowRest.service.UserService;
+import com.project.yellowRest.service.RecordServiceImpl;
+import com.project.yellowRest.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -17,14 +17,14 @@ import java.util.List;
 @RequestMapping("/users")
 public class RecordController {
 
-    private final UserService userService;
-    private final RecordService recordService;
+    private final UserServiceImpl userService;
+    private final RecordServiceImpl recordService;
 
     @Value("${upload.path}")
     private String uploadPath;
 
     @Autowired
-    public RecordController(UserService userService, RecordService recordService) {
+    public RecordController(UserServiceImpl userService, RecordServiceImpl recordService) {
         this.userService = userService;
         this.recordService = recordService;
     }
@@ -45,17 +45,25 @@ public class RecordController {
             @PathVariable("recordid") Long recordId,
             @PathVariable("userid") Long userId
     ){
-        return recordService.findRecordByUserId(userId, recordId);
+        return recordService.findById(recordId);
     }
 
-    @PutMapping("/{userid}/records/{recordid}")
+    @PostMapping("{userid}/records")
+    public Record saveRecord(
+            @RequestBody Record recordModel,
+            @PathVariable("userid") Long userId
+    ){
+        return recordService.saveRecord(recordModel, userId);
+    }
+
+    @PutMapping("{userid}/records/{recordid}")
     public Record updateRecord(@RequestBody Record recordModel,
                                @PathVariable("recordid") Long recordId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return recordService.update(recordModel, recordId, email);
     }
 
-    @DeleteMapping("/{userid}/records/{recordid}")
+    @DeleteMapping("{userid}/records/{recordid}")
     public void delete(
             @PathVariable("recordid") Long recordId
     ) {

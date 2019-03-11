@@ -4,7 +4,7 @@ import com.project.yellowRest.config.FileStorageProperties;
 import com.project.yellowRest.exception.FileNotFoundException;
 import com.project.yellowRest.exception.FileStorageException;
 import com.project.yellowRest.response.UploadFileResponse;
-import com.project.yellowRest.service.interfaces.IFileStorage;
+import com.project.yellowRest.service.interfaces.FileStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class FileStorageService implements IFileStorage {
+public class FileStorageServiceImpl implements FileStorage {
 
     private final Path fileStorageLocation;
 
     @Autowired
-    public FileStorageService(FileStorageProperties fileStorageProperties) {
+    public FileStorageServiceImpl(FileStorageProperties fileStorageProperties) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
 

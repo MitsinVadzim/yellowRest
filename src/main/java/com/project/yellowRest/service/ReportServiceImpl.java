@@ -2,7 +2,6 @@ package com.project.yellowRest.service;
 
 import com.project.yellowRest.model.Report;
 import com.project.yellowRest.repository.ReportJDBCRepository;
-import com.project.yellowRest.service.interfaces.IReportService;
 import com.project.yellowRest.util.ReportConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,12 +9,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ReportService implements IReportService {
+public class ReportServiceImpl implements com.project.yellowRest.service.interfaces.ReportService {
 
     private final ReportJDBCRepository reportJDBCRepository;
 
     @Autowired
-    public ReportService(ReportJDBCRepository reportJDBCRepository) {
+    public ReportServiceImpl(ReportJDBCRepository reportJDBCRepository) {
         this.reportJDBCRepository = reportJDBCRepository;
     }
 
