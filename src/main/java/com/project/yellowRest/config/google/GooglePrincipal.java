@@ -21,7 +21,7 @@ public class GooglePrincipal implements Principal {
     public GooglePrincipal() {
     }
 
-    GooglePrincipal(BigInteger id, String email, String given_name, String family_name, String picture) {
+    public GooglePrincipal(BigInteger id, String email, String given_name, String family_name, String picture) {
         this.id = id;
         this.email = email;
         this.given_name = given_name;

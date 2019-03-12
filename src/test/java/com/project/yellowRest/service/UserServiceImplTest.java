@@ -49,10 +49,10 @@ public class UserServiceImplTest {
 
     @Test
     public void findById() {
-    }
-
-    @Test
-    public void save() {
+        UserEntity userEntity = new UserEntity(1L, "Vadim", "admin@gmail.com");
+        User user = UserConverter.convertToModel(userEntity);
+        given(userRepository.findById(1L)).willReturn(java.util.Optional.of(userEntity));
+        Assert.assertEquals(userService.findById(1L), user);
     }
 
     @Test
